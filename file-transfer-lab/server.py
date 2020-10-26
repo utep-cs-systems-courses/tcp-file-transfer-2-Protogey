@@ -27,7 +27,7 @@ print("listening on:", bindAddr)
 while True:
     sock, addr = lsock.accept()
     from framedSock import framedSend, framedReceive
-
+    #implemented like the demo code, use framedSend
     name = input("What is the file name, include its extension")
     if not os.fork():
         print("new child process handling connection from", addr)

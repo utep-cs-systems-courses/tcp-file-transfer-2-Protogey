@@ -33,13 +33,16 @@ except:
 addrFamily = socket.AF_INET
 socktype = socket.SOCK_STREAM
 addrPort = (serverHost, serverPort)
-
+#connection begins
 s = socket.socket(addrFamily, socktype)
 
 if s is None:
         print('could not open socket')
         sys.exit(1)
+#if we connect successfully, we 
 s.connect(addrPort)
-name = input("Receiving file")
+name = input("Input receiving file Name:")
 from framedSock import framedSend, framedReceive
+#framedReceive reads from the socket and puts the bytes into a file named after
+#user input, in a txt
 framedReceive(s)
