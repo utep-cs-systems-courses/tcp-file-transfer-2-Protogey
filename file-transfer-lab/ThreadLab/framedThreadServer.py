@@ -30,6 +30,7 @@ lsock.listen(5)
 print("listening on:", bindAddr)
 
 from threading import Thread;
+from threading import Lock;
 from encapFramedSock import EncapFramedSock
 
 class Server(Thread):
@@ -38,15 +39,20 @@ class Server(Thread):
         self.sock, self.addr = sockAddr
         self.fsock = EncapFramedSock(sockAddr)
     def run(self):
+        lock = Lock()
         #here our receiving takes place, ask for the name youd like for the file
         #place received data into the given file name
         print("new thread handling connection from", self.addr)
-        name = input("What name would you like for the received file?")
-        if path.exists(name):
-            print("That file already exists..!")
-            sys.exit(1)
-        self.fsock.receive(name, debug)
-        print("done receiving..!")
+        lock.acquire()
+        try:
+            name = input("What name would you like for the received file?")
+            if path.exists(name):
+                print("That file already exists..!")
+                sys.exit(1)
+            self.fsock.receive(name, debug)
+            print("done receiving..!")
+        finally:
+            lock.release()
 
 while True:
     sockAddr = lsock.accept()

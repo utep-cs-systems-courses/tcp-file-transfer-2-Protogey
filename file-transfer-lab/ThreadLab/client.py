@@ -9,6 +9,7 @@ import socket, sys, re, os
 
 sys.path.append("../lib")       # for params
 import params
+from os import path
 
 #used to transfer files to the server
 from encapFramedSock import EncapFramedSock
@@ -50,10 +51,15 @@ fsock = EncapFramedSock((sock, addrPort))
 
 #get the file name, attached should be the extension(.txt, .pdf, etc...)
 name = input("What file do you want to send?")
+
+if not path.exists(name):
+            print("That file does not exists..!")
+            sys.exit(1)
 #check the file size is not 0, if it is handle error by exit
 if os.path.getsize(name) == 0:
             print("file size 0")
             sys.exit(1)
+            
 #send to the server, print and close when done
 fsock.send(name, debug)
 print("done sending..!")
