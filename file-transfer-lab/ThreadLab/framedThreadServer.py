@@ -1,8 +1,13 @@
 #! /usr/bin/env python3
 
+'''
+Server - receive files from the clients
+'''
+
 import sys
 sys.path.append("../lib")       # for params
 import re, socket, params, os
+from os import path
 
 switchesVarDefaults = (
     (('-l', '--listenPort') ,'listenPort', 50001),
@@ -33,20 +38,15 @@ class Server(Thread):
         self.sock, self.addr = sockAddr
         self.fsock = EncapFramedSock(sockAddr)
     def run(self):
+        #here our receiving takes place, ask for the name youd like for the file
+        #place received data into the given file name
         print("new thread handling connection from", self.addr)
-        name = input("What file do you want to send?")
-        self.fsock.send(name, debug)
-        """
-            payload = self.fsock.receive(debug)
-            if debug: print("rec'd: ", payload)
-            if not payload:     # done
-                if debug: print(f"thread connected to {addr} done")
-                self.fsock.close()
-                return          # exit
-            payload += b"!"             # make emphatic!
-            self.fsock.send(payload, debug)
-        
-        """
+        name = input("What name would you like for the received file?")
+        if path.exists(name):
+            print("That file already exists..!")
+            sys.exit(1)
+        self.fsock.receive(name, debug)
+        print("done receiving..!")
 
 while True:
     sockAddr = lsock.accept()

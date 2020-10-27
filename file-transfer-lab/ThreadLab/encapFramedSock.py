@@ -1,4 +1,4 @@
-import re
+import re, sys
 import os.path
 from os import path
 
@@ -10,29 +10,35 @@ class EncapFramedSock:               # a facade
   def close(self):
     return self.sock.close()
 
+  #updated to take in name instead of payload
   def send(self, name, debugPrint=0):
-    name = name.strip()
+    name = name.strip()#strip of spaces
     print("Sending: ", name)
+    #if the file does not exist in the directory, exit
     if not path.exists(name):
       print("file does not exists!")
       sys.exit(1)
-      
-    #self.sock.send(name.encode())
+
+    #open the file as readbytes, variable f
     with open(name, 'rb') as f:
+      #read 1024 bytes from the file.
       l = f.read(1024)
       print("text: ", l.decode())
+      #read until end, and send after every read
       while(l):
         self.sock.send(l)
         l = f.read(1024)
       print("Sent..!")
-      
-  def receive(self, debugPrint=0):
-    #name = name.strip()
+
+  #updated to receive a file and "received file"
+  def receive(self, name, debugPrint=0):
+    name = name.strip()#strip spaces
     print("Receiving..!")
-    with open("Received_file", 'wb') as f:
-      data = self.sock.recv(1024)
+    with open(name, 'wb') as f:
+      data = self.sock.recv(1024)#received data
       print("text: ", data.decode())
-      while (data):
+      while (data):#write given data, continue to read
+        #i had a hanging recv in this part, just skipped.
         f.write(data)
         data = ''#self.sock.recv(1024)
       print("Received..!")
