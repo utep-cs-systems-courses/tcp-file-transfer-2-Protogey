@@ -34,7 +34,9 @@ class Server(Thread):
         self.fsock = EncapFramedSock(sockAddr)
     def run(self):
         print("new thread handling connection from", self.addr)
-        while True:
+        name = input("What file do you want to send?")
+        self.fsock.send(name, debug)
+        """
             payload = self.fsock.receive(debug)
             if debug: print("rec'd: ", payload)
             if not payload:     # done
@@ -44,10 +46,9 @@ class Server(Thread):
             payload += b"!"             # make emphatic!
             self.fsock.send(payload, debug)
         
+        """
 
 while True:
     sockAddr = lsock.accept()
     server = Server(sockAddr)
     server.start()
-
-

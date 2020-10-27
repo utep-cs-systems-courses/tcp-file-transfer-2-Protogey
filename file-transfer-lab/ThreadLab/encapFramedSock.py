@@ -1,41 +1,38 @@
 import re
+import os.path
+from os import path
 
 class EncapFramedSock:               # a facade
   def __init__(self, sockAddr):
     self.sock, self.addr = sockAddr
     self.rbuf = b""         # receive buffer
+
   def close(self):
     return self.sock.close()
-  def send(self, payload, debugPrint=0):
-    if debugPrint: print("framedSend: sending %d byte message" % len(payload))
-    msg = str(len(payload)).encode() + b':' + payload
-    while len(msg):
-      nsent = self.sock.send(msg)
-      msg = msg[nsent:]
+
+  def send(self, name, debugPrint=0):
+    name = name.strip()
+    print("Sending: ", name)
+    if not path.exists(name):
+      print("file does not exists!")
+      sys.exit(1)
+      
+    #self.sock.send(name.encode())
+    with open(name, 'rb') as f:
+      l = f.read(1024)
+      print("text: ", l.decode())
+      while(l):
+        self.sock.send(l)
+        l = f.read(1024)
+      print("Sent..!")
+      
   def receive(self, debugPrint=0):
-    state = "getLength"
-    msgLength = -1
-    while True:
-      if (state == "getLength"):
-        match = re.match(b'([^:]+):(.*)', self.rbuf, re.DOTALL | re.MULTILINE) # look for colon
-        if match:
-          lengthStr, self.rbuf = match.groups()
-          try: 
-            msgLength = int(lengthStr)
-          except:
-            if len(self.rbuf):
-              print("badly formed message length:", lengthStr)
-              return None
-          state = "getPayload"
-      if state == "getPayload":
-        if len(self.rbuf) >= msgLength:
-         payload = self.rbuf[0:msgLength]
-         self.rbuf = self.rbuf[msgLength:]
-         return payload
-      r = self.sock.recv(100)
-      self.rbuf += r
-      if len(r) == 0:
-        if len(self.rbuf) != 0:
-         print("FramedReceive: incomplete message. \n state=%s, length=%d, self.rbuf=%s" % (state, msgLength, self.rbuf))
-        return None
-      if debugPrint: print("FramedReceive: state=%s, length=%d, self.rbuf=%s" % (state, msgLength, self.rbuf))
+    #name = name.strip()
+    print("Receiving..!")
+    with open("Received_file", 'wb') as f:
+      data = self.sock.recv(1024)
+      print("text: ", data.decode())
+      while (data):
+        f.write(data)
+        data = ''#self.sock.recv(1024)
+      print("Received..!")
