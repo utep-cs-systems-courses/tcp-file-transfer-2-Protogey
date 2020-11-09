@@ -43,13 +43,14 @@ class Server(Thread):
         #here our receiving takes place, ask for the name youd like for the file
         #place received data into the given file name
         print("new thread handling connection from", self.addr)
+
         lock.acquire()
         try:
             name = input("What name would you like for the received file?")
             if path.exists(name):
                 print("That file already exists..!")
                 sys.exit(1)
-            self.fsock.receive(name, debug)
+                self.fsock.receive(name, debug)
             print("done receiving..!")
         finally:
             lock.release()
