@@ -57,6 +57,8 @@ class Server(Thread):
                 print("That file is already being transferred!")
                 lock.release()
                 sys.exit(1)
+            lock.release()
+            lock.acquire()
             fileSet.add(name)
             self.fsock.receive(name, debug)
             print("done receiving..!")
