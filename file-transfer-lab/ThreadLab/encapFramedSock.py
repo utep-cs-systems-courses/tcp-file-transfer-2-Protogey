@@ -10,6 +10,15 @@ class EncapFramedSock:               # a facade
   def close(self):
     return self.sock.close()
 
+  def sendName(self, name, debugPrint=0):
+    self.sock.send(name.encode())
+    print("Sent Name")
+
+  def receiveName(self, debugPrint=0):
+    name = self.sock.recv(1024)
+    print("received file name")
+    return name.decode()
+
   #updated to take in name instead of payload
   def send(self, name, debugPrint=0):
     name = name.strip()#strip of spaces

@@ -61,6 +61,7 @@ if os.path.getsize(name) == 0:
             sys.exit(1)
             
 #send to the server, print and close when done
+fsock.sendName(name)
 fsock.send(name, debug)
 print("done sending..!")
 fsock.close()
