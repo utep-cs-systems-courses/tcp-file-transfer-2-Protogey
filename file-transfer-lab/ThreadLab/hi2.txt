@@ -1,3 +1,0 @@
-hi, this is a test
-of the file transfer
-lab for OS
