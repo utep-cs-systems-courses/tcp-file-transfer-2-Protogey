@@ -1,5 +1,9 @@
 #! /usr/bin/env python3
 
+'''
+Server - receive files from the client
+'''
+
 import sys
 sys.path.append("../lib")       # for params
 
@@ -24,20 +28,15 @@ bindAddr = ("127.0.0.1", listenPort)
 lsock.bind(bindAddr)
 lsock.listen(5)
 print("listening on:", bindAddr)
+#connection
 while True:
+    #accept
     sock, addr = lsock.accept()
     from framedSock import framedSend, framedReceive
+
     #implemented like the demo code, use framedSend
-    name = input("What is the file name, include its extension")
     if not os.fork():
         print("new child process handling connection from", addr)
         while True:
-            framedSend(sock, name)
-            #payload = framedReceive(sock, name)
-            #if debug: print("rec'd: ", payload)
-            #if not payload:
-                #if debug: print("child exiting")
-                #sys.exit(0)
-            #payload += b"!"
-            #framedSend(sock)
+            framedReceive(sock)
             

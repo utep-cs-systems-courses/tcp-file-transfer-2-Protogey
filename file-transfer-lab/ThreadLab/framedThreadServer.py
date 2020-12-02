@@ -47,7 +47,7 @@ class Server(Thread):
         print("new thread handling connection from", self.addr)
         lock.acquire()
         try:
-            name = self.fsock.receiveName(debug)
+            name = input("What would you like to name the file?")#self.fsock.receiveName(debug)
             
             if path.exists(name):
                 print("That file already exists..!")
@@ -58,9 +58,9 @@ class Server(Thread):
                 lock.release()
                 sys.exit(1)
             fileSet.add(name)
-            lock.release()
             self.fsock.receive(name, debug)
             print("done receiving..!")
+            lock.release()
             fileSet.remove(name)
         finally:
             print("Transfer complete")

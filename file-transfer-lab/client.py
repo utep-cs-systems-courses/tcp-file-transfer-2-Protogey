@@ -1,6 +1,9 @@
 #! /usr/bin/env python3
 
-# Echo client program
+'''
+Client - send files to the server
+'''
+
 import socket, sys, re
 
 sys.path.append("../lib")       # for params
@@ -39,10 +42,13 @@ s = socket.socket(addrFamily, socktype)
 if s is None:
         print('could not open socket')
         sys.exit(1)
-#if we connect successfully, we 
+
+#if we connect successfully
 s.connect(addrPort)
-name = input("Input receiving file Name:")
+name = input("What is the file name?")
+
 from framedSock import framedSend, framedReceive
-#framedReceive reads from the socket and puts the bytes into a file named after
-#user input, in a txt
-framedReceive(s)
+
+#framedSend reads bytes from the file and sends them through a socket
+#the server will receive and get the file
+framedSend(s, name)
